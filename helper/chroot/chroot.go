@@ -16,8 +16,9 @@ type ChrootHelper struct {
 }
 
 // New creates a new filesystem wrapping up the given 'fs'.
-// The created filesystem has its base in the given ChrootHelperectory of the
-// underlying filesystem.
+//
+// The created filesystem has its base in the given directory of the underlying
+// filesystem.
 func New(fs billy.Basic, base string) billy.Filesystem {
 	return &ChrootHelper{
 		underlying: polyfill.New(fs),

@@ -4,22 +4,31 @@
 package osfs
 
 import (
-	"github.com/go-git/go-billy/v5"
-	"github.com/go-git/go-billy/v5/helper/chroot"
-	"github.com/go-git/go-billy/v5/memfs"
+	"os"
+	"syscall"
 )
 
-// globalMemFs is the global memory fs
-var globalMemFs = memfs.New()
-
-// Default Filesystem representing the root of in-memory filesystem for a
-// js/wasm environment.
-var Default = memfs.New()
-
-// New returns a new OS filesystem.
-func New(baseDir string, _ ...Option) billy.Filesystem {
-	return chroot.New(Default, Default.Join("/", baseDir))
+func (f *file) Lock() error {
+	f.m.Lock()
+	defer f.m.Unlock()
+	return nil
 }
 
-type options struct {
+func (f *file) Unlock() error {
+	f.m.Lock()
+	defer f.m.Unlock()
+	return nil
+}
+
+func rename(from, to string) error {
+	return os.Rename(from, to)
+}
+
+// umask sets umask to a new value, and returns a func which allows the
+// caller to reset it back to what it was originally.
+func umask(new int) func() {
+	old := syscall.Umask(new)
+	return func() {
+		syscall.Umask(old)
+	}
 }

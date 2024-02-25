@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/go-git/go-billy/v5"
-	"github.com/go-git/go-billy/v5/helper/chroot"
 	"github.com/go-git/go-billy/v5/test"
 
 	. "gopkg.in/check.v1"
@@ -46,11 +45,11 @@ func (s *OSSuite) TestCapabilities(c *C) {
 	c.Assert(ok, Equals, true)
 
 	caps := billy.Capabilities(s.FS)
-	c.Assert(caps, Equals, billy.DefaultCapabilities&^billy.LockCapability)
+	c.Assert(caps, Equals, billy.DefaultCapabilities)
 }
 
 func TestDefault(t *testing.T) {
-	want := &chroot.ChrootHelper{} // memfs is wrapped around ChrootHelper.
+	want := Default
 	got := Default
 
 	if reflect.TypeOf(got) != reflect.TypeOf(want) {
